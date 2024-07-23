@@ -23,24 +23,31 @@
             {% endif %}
         </div>
         <br><br>
+
         <div class="col-4">
             <br><br><br>
             <div class="card text-center">
                 <div class="card-header">
                     Follows
                 </div>
+
                 <div class="card-body">
 
                     <p class="card-text">
+                        {% if profile.follows.all%}
                         {% for following in profile.follows.all %}
 
                         <a href="{% url 'profile' following.user.id %}">@{{ following }}</a><br>
-
                         {% endfor %}
+                        {% else %}
+                        <span class="card-text"><small class="text-body-secondary">No one</small></span>
+                        {% endif %}
+
                     </p>
 
                 </div>
             </div>
+
             <br>
 
             <div class="card">
@@ -49,15 +56,22 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">
+                        {% if profile.follows.all%}
                         {% for following in profile.followed_by.all %}
+
 
                         <a href="{% url 'profile' following.user.id %}">@{{ following }}</a><br>
 
                         {% endfor %}
+                        {% else %}
+                        <span class="card-text"><small class="text-body-secondary">No one</small></span>
+                        {% endif %}
                     </p>
                 </div>
             </div>
+            {% endif %}
             <br>
+            {% if request.user.is_authenticated %}
             {% if user.profile.id != profile.id %}
             <form method="POST">
                 {% csrf_token %}
@@ -76,13 +90,12 @@
 
                 {% endif %}
                 {% endif %}
-
+                {% endif %}
             </form>
         </div>
     </div>
 
 </div>
-{% endif %}
 
 
 {% endblock %}

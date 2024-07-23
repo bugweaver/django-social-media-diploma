@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+
+{% block content %}
+
+<div class="col-md6 offset-md-4">
+    <h1>Register</h1><br>
+
+    <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+</div>
+
+{% endblock %}
