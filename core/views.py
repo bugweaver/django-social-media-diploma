@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Profile, Post
+from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.decorators import login_required
-from .forms import PostForm, SignUpForm
+from .forms import PostForm, SignUpForm, UpdateUserForm, ChangePasswordForm, ProfilePicForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
@@ -81,9 +83,10 @@ def logout_user(request):
 
 def register_user(request):
     if request.user.is_authenticated:
-        messages.success(request, "You're already logged in")
+        messages.success(request, "You are already logged in")
         return redirect('home')
     else:
+
         page = 'register'
         form = SignUpForm()
 
@@ -91,15 +94,53 @@ def register_user(request):
             form = SignUpForm(request.POST)
             if form.is_valid():
                 user = form.save(commit=False)
-                user.username = user.username.lower()
                 user.save()
-
                 messages.success(request, "User account was created!")
                 login(request, user)
                 return redirect('home')
             else:
                 messages.error(request, 'An error has occurred during registration')
 
-        context = {'page': page, 'form': form}
+        return render(request, 'core/register.html', {'form': form})
 
-    return render(request, 'core/register.html', context)
+
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        profile_pic = Profile.objects.get(user__id=request.user.id)
+
+        user_form = UpdateUserForm(request.POST or None, request.FILES or None, instance=current_user)
+        profile_form = ProfilePicForm(request.POST or None, request.FILES or None, instance=profile_pic)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            login(request, current_user)
+            messages.success(request, "Your profile has been successfully updated")
+            return redirect('home')
+        return render(request, "core/update_user.html",
+                      {'user_form': user_form, "profile_form": profile_form})
+    else:
+        messages.success(request, "You must be logged in to view that page")
+        return redirect('login')
+
+
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        if request.method == 'POST':
+            form = ChangePasswordForm(current_user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your password has been successfully changed")
+                login(request, current_user)
+                return redirect('home')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                    return redirect('update_password')
+        else:
+            form = ChangePasswordForm(current_user)
+            return render(request, "core/update_password.html", {'form': form})
+    else:
+        messages.success(request, "You must be logged in to view that page")
+        return redirect('login')

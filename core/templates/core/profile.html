@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block content %}
 
 {% if profile %}
@@ -26,6 +26,13 @@
 
         <div class="col-4">
             <br><br><br>
+            {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" alt="" style="width:200px; height:200px">
+            <br><br>
+            {% else %}
+            <img src="{% static 'images/default_avatar.png' %}" alt="" style="width:200px; height:200px">
+            <br><br>
+            {% endif %}
             <div class="card text-center">
                 <div class="card-header">
                     Follows
@@ -92,6 +99,10 @@
                 {% endif %}
                 {% endif %}
             </form>
+
+            {% if request.user.id == profile.user.id %}
+            <a href="{% url 'update_user' %}" class="btn btn-outline-primary">Update Profile</a>
+            {% endif %}
         </div>
     </div>
 
