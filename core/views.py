@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Profile, Post
 from django.contrib.auth.decorators import login_required
@@ -141,6 +141,19 @@ def update_password(request):
         else:
             form = ChangePasswordForm(current_user)
             return render(request, "core/update_password.html", {'form': form})
+    else:
+        messages.success(request, "You must be logged in to view that page")
+        return redirect('login')
+
+
+def post_like(request, pk):
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, id=pk)
+        if post.likes.filter(id=request.user.id):
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+        return redirect(request.META.get('HTTP_REFERER'))
     else:
         messages.success(request, "You must be logged in to view that page")
         return redirect('login')

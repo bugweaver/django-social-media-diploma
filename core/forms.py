@@ -16,7 +16,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        exclude = 'user',
+        exclude = 'user', 'likes'
 
 
 class SignUpForm(UserCreationForm):

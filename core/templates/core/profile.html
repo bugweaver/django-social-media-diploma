@@ -13,12 +13,38 @@
             {% for post in posts %}
 
             <div class="alert alert-primary" role="alert">
-                {{ post.body }}<br>
-                <small class="text-muted">
-                    {{ post.created_at }}
-                </small>
-            </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1">
+                            {% if profile.profile_image %}
+                            <img src="{{ profile.profile_image.url }}" alt="{{ profile.user.username }}" width=50
+                                 height=50
+                                 class="rounded-circle">
+                            {% else %}
+                            <img src="{% static 'images/default_avatar.png' %}" alt="{{ profile.user.username }}"
+                                 width=50 height=50>
+                            {% endif %}
+                        </div>
+                        <div class="col-10">
 
+                            {{ post.body }}<br>
+                            <small class="text-muted">
+                                {{ post.created_at }}
+                                - {{ post.count_likes }} likes
+                            </small>
+                        </div>
+                        <div class="col-1">
+                            {% if user in post.likes.all %}
+                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/liked.png' %}"
+                                                                         width="30" height="30"></a>
+                            {% else %}
+                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/not_liked.png' %}"
+                                                                         width="30" height="30"></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
             {% endif %}
         </div>
@@ -27,10 +53,10 @@
         <div class="col-4">
             <br><br><br>
             {% if profile.profile_image %}
-            <img src="{{ profile.profile_image.url }}" alt="" style="width:200px; height:200px">
+            <img src="{{ profile.profile_image.url }}" alt="" width=200 height=200 class="rounded-circle">
             <br><br>
             {% else %}
-            <img src="{% static 'images/default_avatar.png' %}" alt="" style="width:200px; height:200px">
+            <img src="{% static 'images/default_avatar.png' %}" alt="" width=200 height=200>
             <br><br>
             {% endif %}
             <div class="card text-center">
