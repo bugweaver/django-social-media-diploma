@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% if user.id != profiles.user.id %}
+<h1>{{ profiles.user.username }}'s Follows</h1>
+{% else %}
+<h1>Your Follows</h1>
+{% endif %}
+<br>
+{% if profiles %}
+
+
+{% for profile in profiles.follows.all %}
+
+<div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" width=200 height=200
+                 class="img-fluid rounded-circle" alt="{{ profile.user.username }}">
+            {% else %}
+            <img src="{% static 'images/default_avatar.png' %}" width=200 height=200
+                 class="img-fluid rounded-start" alt="{{ profile.user.username }}">
+            {% endif %}
+
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                {% if request.user.is_authenticated %}
+                {% if request.user.id == profile.user.id %}
+                <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }} (You)</a><br>
+                </h5>
+                {% else %}
+                <h5 class="card-title">{{ profile.user.first_name }} {{ profile.user.last_name }}
+                    {% if profile not in user.profile.follows.all %}
+                    <a href="{% url 'follow' profile.user.id %}">
+                        <img src="{% static 'images/add.png' %}" style="width:16px;"></a><br>
+                    {% else %}
+                    <a href="{% url 'unfollow' profile.user.id %}">
+                        <img src="{% static 'images/remove.png' %}" style="width:16px;"></a><br>
+                    {% endif %}
+                </h5>
+                {% endif %}
+                {% else %}
+
+                <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a><br></h5>
+                    {% endif %}
+                    <p class="card-text"><a href="{% url 'profile' profile.user.id %}">@{{ profile.user.username }}</a>
+                    </p>
+                    <br>
+                    <p class="card-text"><small class="text-body-secondary">
+                        Last Updated: {{ profile.date_modified }}</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
+
+
+{% endif %}
+{% endblock %}

@@ -121,7 +121,14 @@ class ChangePasswordForm(SetPasswordForm):
 
 class ProfilePicForm(forms.ModelForm):
     profile_image = forms.ImageField(label="Profile Picture")
+    bio = forms.CharField(label="", widget=forms.Textarea(attrs={'class': 'form-control width_input',
+                                                                 'placeholder': 'Bio'}))
 
     class Meta:
         model = Profile
-        fields = ('profile_image',)
+        fields = ('bio', 'profile_image')
+
+    def __init__(self, *args, **kwargs):
+        super(ProfilePicForm, self).__init__(*args, **kwargs)
+        self.fields['profile_image'].required = False
+        self.fields['bio'].required = False

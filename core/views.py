@@ -86,8 +86,6 @@ def register_user(request):
         messages.success(request, "You are already logged in")
         return redirect('home')
     else:
-
-        page = 'register'
         form = SignUpForm()
 
         if request.method == 'POST':
@@ -155,5 +153,40 @@ def post_like(request, pk):
             post.likes.add(request.user)
         return redirect(request.META.get('HTTP_REFERER'))
     else:
-        messages.success(request, "You must be logged in to view that page")
+        messages.success(request, "You must be logged in to like that post")
         return redirect('login')
+
+
+def post_show(request, pk):
+    post = get_object_or_404(Post, id=pk)
+    if post:
+        return render(request, "core/post_show.html", {'post': post})
+    else:
+        messages.error(request, "That post does not exist")
+        return redirect('home')
+
+
+def unfollow(request, pk):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user_id=pk)
+        request.user.profile.follows.remove(profile)
+        request.user.profile.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+def follow(request, pk):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user_id=pk)
+        request.user.profile.follows.add(profile)
+        request.user.profile.save()
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+def followers(request, pk):
+    profiles = Profile.objects.get(user_id=pk)
+    return render(request, 'core/followers.html', {'profiles': profiles})
+
+
+def follows(request, pk):
+    profiles = Profile.objects.get(user_id=pk)
+    return render(request, 'core/follows.html', {'profiles': profiles})

@@ -3,39 +3,48 @@
 
 {% block content %}
 
-<h1>Profile List</h1>
+{% if user.id != profiles.user.id %}
+<h1>{{ profiles.user.username }}'s Followers</h1>
+{% else %}
+<h1>Your Followers</h1>
+{% endif %}
 <br>
 {% if profiles %}
 
 
-{% for profile in profiles %}
-{% if request.user.id != profile.user.id %}
+{% for profile in profiles.followed_by.all %}
 
 <div class="card mb-3" style="max-width: 540px;">
     <div class="row g-0">
         <div class="col-md-4">
             {% if profile.profile_image %}
-            <img src="{{ profile.profile_image.url }}" width="200" height="200" class="img-fluid rounded-circle"
-                 alt="{{ profile.user.username }}">
+            <img src="{{ profile.profile_image.url }}" width=200 height=200
+                 class="img-fluid rounded-circle" alt="{{ profile.user.username }}">
             {% else %}
-            <img src="{% static 'images/default_avatar.png' %}" width="200" height="200"
+            <img src="{% static 'images/default_avatar.png' %}" width=200 height=200
                  class="img-fluid rounded-start" alt="{{ profile.user.username }}">
             {% endif %}
 
         </div>
         <div class="col-md-8">
             <div class="card-body">
+                {% if request.user.id == profile.user.id %}
+                <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }} (You)</a></h5>
+                {% else %}
                 {% if request.user.is_authenticated %}
                 <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a>
+
                     {% if profile not in user.profile.follows.all %}
                     <a href="{% url 'follow' profile.user.id %}">
                         <img src="{% static 'images/add.png' %}" style="width:16px;"></a><br>
                     {% else %}
                     <a href="{% url 'unfollow' profile.user.id %}">
                         <img src="{% static 'images/remove.png' %}" style="width:16px;"></a><br>
+
                     {% endif %}</h5>
                 {% else %}
                 <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a></h5>
+                {% endif %}
                 {% endif %}
                 <p class="card-text"><a href="{% url 'profile' profile.user.id %}">@{{ profile.user.username }}</a></p>
                 <br>
@@ -46,7 +55,7 @@
     </div>
 </div>
 
-{% endif %}
+
 {% endfor %}
 
 

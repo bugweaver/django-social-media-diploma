@@ -3,6 +3,7 @@
 
 {% block content %}
 
+{% if request.user.is_authenticated %}
 <div class="container text-center">
     <div class="row">
         <div class="col-8">
@@ -11,6 +12,7 @@
             {% for post in posts %}
             {% if request.user.id != post.user.id %}
 
+
             <div class="alert alert-primary" role="alert">
                 <div class="container">
                     <div class="row">
@@ -18,15 +20,16 @@
                             {% if post.user.profile.profile_image %}
                             <img src="{{ post.user.profile.profile_image.url }}"
                                  alt="{{ post.user.profile.user.username }}"
-                                 width=50 height=50 class="rounded-circle">
+                                 width="50" height="50" class="rounded-circle">
                             {% else %}
                             <img src="{% static 'images/default_avatar.png' %}" alt="{{ profile.user.username }}"
-                                 width=50 height=50>
+                                 width="50" height="50">
                             {% endif %}
                         </div>
                         <div class="col-10">
 
-                            {{ post.body }}<br>
+                            <a href="{% url 'post_show' post.id %}" style="color: inherit;text-decoration: none;">
+                                {{ post.body }}</a><br>
                             <small class="text-muted">
                                 {{ post.created_at }} By
                                 <a href="{% url 'profile' post.user.id %}">@{{ post.user.username }}</a>
@@ -35,14 +38,17 @@
                         </div>
                         <div class="col-1">
                             {% if user in post.likes.all %}
-                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/liked.png' %}" width="30" height="30"></a>
+                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/liked.png' %}"
+                                                                         width="30" height="30"></a>
                             {% else %}
-                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/not_liked.png' %}" width="30" height="30"></a>
+                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/not_liked.png' %}"
+                                                                         width="30" height="30"></a>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+
             {% endif %}
             {% endfor %}
         </div>
@@ -63,4 +69,50 @@
         </div>
     </div>
 </div>
+
+{% else %}
+
+
+{% for post in posts %}
+{% if request.user.id != post.user.id %}
+
+
+<div class="alert alert-primary text-center mx-auto" style="max-width: 720px;" role="alert">
+    <div class="container">
+        <div class="row">
+            <div class="col-1">
+                {% if post.user.profile.profile_image %}
+                <img src="{{ post.user.profile.profile_image.url }}"
+                     alt="{{ post.user.profile.user.username }}"
+                     width="50" height="50" class="rounded-circle">
+                {% else %}
+                <img src="{% static 'images/default_avatar.png' %}" alt="{{ profile.user.username }}"
+                     width="50" height="50">
+                {% endif %}
+            </div>
+            <div class="col-10">
+
+                <a href="{% url 'post_show' post.id %}" style="color: inherit;text-decoration: none;">
+                    {{ post.body }}</a><br>
+                <small class="text-muted">
+                    {{ post.created_at }} By
+                    <a href="{% url 'profile' post.user.id %}">@{{ post.user.username }}</a>
+                    - {{ post.count_likes }} likes
+                </small>
+            </div>
+            <div class="col-1">
+                {% if user in post.likes.all %}
+                <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/liked.png' %}"
+                                                             width="30" height="30"></a>
+                {% else %}
+                <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/not_liked.png' %}"
+                                                             width="30" height="30"></a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
 {% endblock %}
