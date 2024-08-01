@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3 style="text-align: center;">You Searched For: {{ search }}</h3><br>
+
+{% if searched_user %}
+<p style="text-align: center;">Users</p>
+{% for user in searched_user %}
+
+<div class="card mb-3 mx-auto" style="max-width: 540px;">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if profile.profile_image %}
+            <img src="{{ user.profile.profile_image.url }}" width="200" height="200" class="img-fluid rounded-circle"
+                 alt="{{ user.profile.user.username }}">
+            {% else %}
+            <img src="{% static 'images/default_avatar.png' %}" width="200" height="200"
+                 class="img-fluid rounded-start" alt="{{ user.profile.user.username }}">
+            {% endif %}
+
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                {% if request.user.is_authenticated %}
+                <h5 class="card-title"><a href="{% url 'profile' user.profile.user.id %}">
+                    {{ user.profile.user.first_name }} {{ user.profile.user.last_name }}</a></h5>
+                {% else %}
+                <h5 class="card-title"><a href="{% url 'profile' user.profile.user.id %}">
+                    {{ profile.user.first_name }} {{ profile.user.last_name }}</a></h5>
+                {% endif %}
+                <p class="card-text"><a href="{% url 'profile' user.profile.user.id %}">@{{ user.profile.user.username }}</a></p>
+                <br>
+                <p class="card-text"><small class="text-body-secondary">
+                    Last Updated: {{ user.profile.date_modified }}</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% elif searched_users == None %}
+<p style="text-align: center;">No One From Users</p>
+
+{% endif %}
+
+{% if searched_post %}
+<br>
+<p style="text-align: center;">Posts</p>
+{% for post in searched_post %}
+<div class="alert alert-primary text-center mx-auto" style="max-width: 720px;" role="alert">
+    <div class="container">
+        <div class="row">
+            <div class="col-1">
+                {% if post.user.profile.profile_image %}
+                <img src="{{ post.user.profile.profile_image.url }}"
+                     alt="{{ post.user.profile.user.username }}"
+                     width=50 height=50 class="rounded-circle">
+                {% else %}
+                <img src="{% static 'images/default_avatar.png' %}" alt="{{ profile.user.username }}"
+                     width=50 height=50>
+                {% endif %}
+            </div>
+            <div class="col-10">
+
+                <a href="{% url 'post_show' post.id %}" style="color: inherit;text-decoration: none;">
+                                {{ post.body }}</a><br>
+                <small class="text-muted">
+                    {{ post.created_at }} By
+                    <a href="{% url 'profile' post.user.id %}">@{{ post.user.username }}</a>
+                    - {{ post.count_likes }}
+                    {% if post.count_likes == 1 %}
+                    like
+                    {% else %}
+                    likes
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% elif searched_posts == None %}
+<p style="text-align: center;">None From The Posts</p>
+{% endif %}
+{% endblock %}

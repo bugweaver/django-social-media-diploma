@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Profile List</h1>
+<h1>Profiles</h1>
 <br>
 {% if profiles %}
 
@@ -29,10 +29,10 @@
                 <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a>
                     {% if profile not in user.profile.follows.all %}
                     <a href="{% url 'follow' profile.user.id %}">
-                        <img src="{% static 'images/add.png' %}" style="width:16px;"></a><br>
+                        <i class="fa fa-user-plus" aria-hidden="true" style="color: green;"></i></a><br>
                     {% else %}
                     <a href="{% url 'unfollow' profile.user.id %}">
-                        <img src="{% static 'images/remove.png' %}" style="width:16px;"></a><br>
+                        <i class="fas fa-user-times" style="color: #e60505;"></i></a><br>
                     {% endif %}</h5>
                 {% else %}
                 <h5 class="card-title"><a href="{% url 'profile' profile.user.id %}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a></h5>

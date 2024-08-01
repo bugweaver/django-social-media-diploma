@@ -33,17 +33,21 @@
                             <small class="text-muted">
                                 {{ post.created_at }} By
                                 <a href="{% url 'profile' post.user.id %}">@{{ post.user.username }}</a>
-                                - {{ post.count_likes }} likes
+                                - {{ post.count_likes }}
+                                {% if post.count_likes == 1 %}
+                                like
+                                {% else %}
+                                likes
+                                {% endif %}
+
+                                {% if user in post.likes.all %}
+                                &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-solid fa-heart"
+                                                                                 style="color: #ff0000;"></i></a>
+                                {% else %}
+                                &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-regular fa-heart"
+                                                                                 style="color: #ff0000;"></i></a>
+                                {% endif %}
                             </small>
-                        </div>
-                        <div class="col-1">
-                            {% if user in post.likes.all %}
-                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/liked.png' %}"
-                                                                         width="30" height="30"></a>
-                            {% else %}
-                            <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/not_liked.png' %}"
-                                                                         width="30" height="30"></a>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -98,16 +102,14 @@
                     {{ post.created_at }} By
                     <a href="{% url 'profile' post.user.id %}">@{{ post.user.username }}</a>
                     - {{ post.count_likes }} likes
+                    {% if user in post.likes.all %}
+                    &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-solid fa-heart"
+                                                                     style="color: #ff0000;"></i></a>
+                    {% else %}
+                    &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-regular fa-heart"
+                                                                     style="color: #ff0000;"></i></a>
+                    {% endif %}
                 </small>
-            </div>
-            <div class="col-1">
-                {% if user in post.likes.all %}
-                <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/liked.png' %}"
-                                                             width="30" height="30"></a>
-                {% else %}
-                <a href="{% url 'post_like' post.id %}"><img src="{% static 'images/not_liked.png' %}"
-                                                             width="30" height="30"></a>
-                {% endif %}
             </div>
         </div>
     </div>

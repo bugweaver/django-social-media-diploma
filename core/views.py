@@ -28,9 +28,9 @@ def home(request):
 
 
 # @login_required(login_url='login')
-def profile_list(request):
+def profiles(request):
     profiles = Profile.objects.exclude()
-    return render(request, 'core/profile_list.html', {'profiles': profiles})
+    return render(request, 'core/profiles.html', {'profiles': profiles})
 
 
 # @login_required(login_url='login')
@@ -56,7 +56,7 @@ def profile(request, pk):
 
 def login_user(request):
     if request.user.is_authenticated:
-        messages.success(request, "You're already logged in")
+        messages.error(request, "You're already logged in")
         return redirect('home')
     else:
 
@@ -69,7 +69,7 @@ def login_user(request):
                 messages.success(request, "You have been successfully logged in")
                 return redirect('home')
             else:
-                messages.success(request, "There was ann error logging in. Please try again")
+                messages.error(request, "There was ann error logging in. Please try again")
                 return redirect('login')
         else:
             return render(request, 'core/login.html', {})
@@ -83,7 +83,7 @@ def logout_user(request):
 
 def register_user(request):
     if request.user.is_authenticated:
-        messages.success(request, "You are already logged in")
+        messages.error(request, "You are already logged in")
         return redirect('home')
     else:
         form = SignUpForm()
@@ -118,7 +118,7 @@ def update_user(request):
         return render(request, "core/update_user.html",
                       {'user_form': user_form, "profile_form": profile_form})
     else:
-        messages.success(request, "You must be logged in to view that page")
+        messages.error(request, "You must be logged in to view that page")
         return redirect('login')
 
 
@@ -140,7 +140,7 @@ def update_password(request):
             form = ChangePasswordForm(current_user)
             return render(request, "core/update_password.html", {'form': form})
     else:
-        messages.success(request, "You must be logged in to view that page")
+        messages.error(request, "You must be logged in to view that page")
         return redirect('login')
 
 
@@ -153,7 +153,7 @@ def post_like(request, pk):
             post.likes.add(request.user)
         return redirect(request.META.get('HTTP_REFERER'))
     else:
-        messages.success(request, "You must be logged in to like that post")
+        messages.error(request, "You must be logged in to like that post")
         return redirect('login')
 
 
@@ -164,6 +164,44 @@ def post_show(request, pk):
     else:
         messages.error(request, "That post does not exist")
         return redirect('home')
+
+
+def delete_post(request, pk):
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, id=pk)
+        if request.user.username == post.user.username:
+            post.delete()
+            messages.success(request, "The post has been deleted")
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.error(request, "You can't delete a post that is not yours!")
+            return redirect('home')
+    else:
+        messages.error(request, "You must be logged in")
+        return redirect('login')
+
+
+def edit_post(request, pk):
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, id=pk)
+        if request.user.username == post.user.username:
+            form = PostForm(request.POST or None, instance=post)
+            if request.method == 'POST':
+                if form.is_valid():
+                    post = form.save(commit=False)
+                    post.user = request.user
+                    post.save()
+                    messages.success(request, "Your post has been updated")
+                    return redirect('home')
+            else:
+                return render(request, "core/edit_post.html", {'form': form, "post": post})
+        else:
+            messages.error(request, "You can't delete a post that is not yours!")
+            return redirect('home')
+
+    else:
+        messages.error(request, "You must be logged in")
+        return redirect('login')
 
 
 def unfollow(request, pk):
@@ -190,3 +228,14 @@ def followers(request, pk):
 def follows(request, pk):
     profiles = Profile.objects.get(user_id=pk)
     return render(request, 'core/follows.html', {'profiles': profiles})
+
+
+def search(request):
+    if request.method == "POST":
+        search = request.POST['search']
+        searched_post = Post.objects.filter(body__contains=search)
+        searched_user = User.objects.filter(username__contains=search)
+        context = {'search': search, 'searched_user': searched_user, 'searched_post': searched_post}
+        return render(request, 'core/search.html', context)
+    else:
+        return render(request, 'core/search.html', {})
