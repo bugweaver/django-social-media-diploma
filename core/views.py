@@ -3,10 +3,9 @@ from django.contrib import messages
 from .models import Profile, Post
 from django.contrib.auth.decorators import login_required
 # from django.contrib.auth.decorators import login_required
-from .forms import PostForm, SignUpForm, UpdateUserForm, ChangePasswordForm, ProfilePicForm
+from .forms import PostForm, SignUpForm, UpdateUserForm, ChangePasswordForm, ProfilePicForm, CommentForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
 
@@ -159,8 +158,19 @@ def post_like(request, pk):
 
 def post_show(request, pk):
     post = get_object_or_404(Post, id=pk)
+    comments = post.comments.all()
     if post:
-        return render(request, "core/post_show.html", {'post': post})
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.user = request.user
+                comment.save()
+                return redirect('post_show', pk=post.pk)
+        else:
+            form = CommentForm()
+        return render(request, "core/post_show.html",  {'post': post, 'comments': comments, 'form': form})
     else:
         messages.error(request, "That post does not exist")
         return redirect('home')
@@ -239,3 +249,20 @@ def search(request):
         return render(request, 'core/search.html', context)
     else:
         return render(request, 'core/search.html', {})
+
+
+# def post_comment(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     comments = post.comments.all()
+#     if request.method == 'POST':
+#         form = CommentForm(request.POST)
+#         if form.is_valid():
+#             comment = form.save(commit=False)
+#             comment.post = post
+#             comment.user = request.user
+#             comment.save()
+#             return redirect('post_show', pk=post.pk)
+#
+#     else:
+#         form = CommentForm()
+#     return render(request, 'core/post_show.html', {'post': post, 'comments': comments, 'form': form})

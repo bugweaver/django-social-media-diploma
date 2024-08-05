@@ -24,7 +24,17 @@ class Post(models.Model):
     def count_likes(self):
         return self.likes.count()
 
+    def comment_count(self):
+        return self.comments.count()
+
     def __str__(self):
         return (f'{self.user}'
                 f' ({self.created_at:%Y-%m-%d %H:%M}) '
                 f'{self.body}...')
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

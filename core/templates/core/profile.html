@@ -48,6 +48,15 @@
                                 &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-regular fa-heart"
                                                                                  style="color: #ff0000;"></i></a>
                                 {% endif %}
+                                &nbsp;&nbsp;
+                                {{ post.comment_count }}
+                                {% if post.comment_count == 1 %}
+                                comment
+                                {% else %}
+                                comments
+                                {% endif %}
+                                &nbsp;<a href="{% url 'post_show' post.id %}"><i
+                                    class="fa-duotone fa-solid fa-comment"></i></a>
 
                                 {% if request.user.username == profile.user.username %}
                                 &nbsp;<a href="{% url 'edit_post' post.id %}"><i class="fas fa-edit"></i></a>

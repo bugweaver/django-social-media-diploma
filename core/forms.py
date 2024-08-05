@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Profile
+from .models import Post, Profile, Comment
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, SetPasswordForm
 from django.contrib.auth.models import User
 
@@ -132,3 +132,13 @@ class ProfilePicForm(forms.ModelForm):
         super(ProfilePicForm, self).__init__(*args, **kwargs)
         self.fields['profile_image'].required = False
         self.fields['bio'].required = False
+
+
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control width_input mx-auto',
+                                                                      'placeholder': 'Comment'}))
+
+    class Meta:
+        model = Comment
+        fields = ('content',)
+
