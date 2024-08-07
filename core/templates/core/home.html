@@ -32,7 +32,7 @@
                                 {{ post.body }}</a><br>
                             <small class="text-muted">
                                 {{ post.created_at }} By
-                                <a href="{% url 'profile' post.user.id %}">@{{ post.user.username }}</a>
+                                <a href="{% url 'profile' post.user.id %}"><b>@{{ post.user.username }}</b></a>
                                 - {{ post.count_likes }}
                                 {% if post.count_likes == 1 %}
                                 like
@@ -47,14 +47,15 @@
                                 &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-regular fa-heart"
                                                                                  style="color: #ff0000;"></i></a>
                                 {% endif %}
-                                &nbsp;&nbsp;
+                                &nbsp;-
                                 {{ post.comment_count }}
                                 {% if post.comment_count == 1 %}
-                                 comment
+                                comment
                                 {% else %}
                                 comments
                                 {% endif %}
-                                &nbsp;<a href="{% url 'post_show' post.id %}"><i class="fa-duotone fa-solid fa-comment"></i></a>
+                                &nbsp;<a href="{% url 'post_show' post.id %}"><i
+                                    class="fa-duotone fa-solid fa-comment"></i></a>
                             </small>
                         </div>
                     </div>
@@ -117,6 +118,14 @@
                     &nbsp;<a href="{% url 'post_like' post.id %}"><i class="fa-regular fa-heart"
                                                                      style="color: #ff0000;"></i></a>
                     {% endif %}
+                    &nbsp;-
+                    {{ post.comment_count }}
+                    {% if post.comment_count == 1 %}
+                    comment
+                    {% else %}
+                    comments
+                    {% endif %}
+                    &nbsp;<a href="{% url 'post_show' post.id %}"><i class="fa-duotone fa-solid fa-comment"></i></a>
                 </small>
             </div>
         </div>
