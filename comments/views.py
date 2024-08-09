@@ -32,6 +32,19 @@ def post_show(request, pk):
         return redirect('home')
 
 
+def comment_like(request, pk):
+    if request.user.is_authenticated:
+        comment = get_object_or_404(Comment, id=pk)
+        if comment.likes.filter(id=request.user.id):
+            comment.likes.remove(request.user)
+        else:
+            comment.likes.add(request.user)
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.error(request, "You must be logged in to like that comment")
+        return redirect('login')
+
+
 def delete_comment(request, pk):
     if request.user.is_authenticated:
         comment = get_object_or_404(Comment, id=pk)

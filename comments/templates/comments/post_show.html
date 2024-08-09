@@ -44,46 +44,73 @@
     {% if request.user.username != comment.user.username %}
     <div class="d-flex" style="background:white;border-radius: 15px;margin:15px;padding:15px;text-align: start;">
         <div>
-        {% if comment.user.profile.profile_image %}
+            {% if comment.user.profile.profile_image %}
 
-        <img src="{{ comment.user.profile.profile_image.url }}"
-             alt="{{ comment.user.profile.user.username }}"
-             width=50 height=50 class="rounded-circle">
-        {% else %}
-        <img src="{% static 'images/default_avatar.png' %}"
-             width=50 height=50>
-        {% endif %}
-        </div>
-        <div style="margin-left: 10px;">
-        {{ comment.content }}<br>
-        <small class="text-muted">
-            By <a href="{% url 'profile' comment.user.id %}">
-            <b>@{{ comment.user.username }}</b></a> {{ comment.created_at }}
-            {% if request.user.id == post.user.id %}
-            &nbsp;<a href="{% url 'delete_comment' comment.id %}"><i class="fa-duotone fa-solid fa-trash"></i></a>
+            <img src="{{ comment.user.profile.profile_image.url }}"
+                 alt="{{ comment.user.profile.user.username }}"
+                 width=50 height=50 class="rounded-circle">
+            {% else %}
+            <img src="{% static 'images/default_avatar.png' %}"
+                 width=50 height=50>
             {% endif %}
-        </small></div>
+        </div>
+        <div style="margin-left: 10px;max-width:260px;">
+            {{ comment.content }}<br>
+            <small class="text-muted">
+                By <a href="{% url 'profile' comment.user.id %}">
+                <b>@{{ comment.user.username }}</b></a> {{ comment.created_at }}<br>
+                {{ comment.count_likes }}
+                {% if comment.count_likes == 1 %}
+                like
+                {% else %}
+                likes
+                {% endif %}
+                {% if user in comment.likes.all %}
+                &nbsp;<a href="{% url 'comment_like' comment.id %}"><i class="fa-solid fa-heart"
+                                                                       style="color: #ff0000;"></i></a>
+                {% else %}
+                &nbsp;<a href="{% url 'comment_like' comment.id %}"><i class="fa-regular fa-heart"
+                                                                       style="color: #ff0000;"></i></a>
+                {% endif %}
+                {% if request.user.id == post.user.id %}
+                &nbsp;<a href="{% url 'delete_comment' comment.id %}"><i class="fa-duotone fa-solid fa-trash"></i></a>
+                {% endif %}
+            </small></div>
     </div>
     {% else %}
-    <div class="d-flex justify-content-end" style="background:white;border-radius: 15px;margin:15px;padding:15px;text-align: start;">
+    <div class="d-flex justify-content-end"
+         style="background:white;border-radius: 15px;margin:15px;padding:15px;text-align: start;">
         <div>
-        {% if comment.user.profile.profile_image %}
+            {% if comment.user.profile.profile_image %}
 
-        <img src="{{ comment.user.profile.profile_image.url }}"
-             alt="{{ comment.user.profile.user.username }}"
-             width=50 height=50 class="rounded-circle">
-        {% else %}
-        <img src="{% static 'images/default_avatar.png' %}"
-             width=50 height=50>
-        {% endif %}
+            <img src="{{ comment.user.profile.profile_image.url }}"
+                 alt="{{ comment.user.profile.user.username }}"
+                 width=50 height=50 class="rounded-circle">
+            {% else %}
+            <img src="{% static 'images/default_avatar.png' %}"
+                 width=50 height=50>
+            {% endif %}
         </div>
-        <div style="margin-left: 10px;">
-        {{ comment.content }}<br>
-        <small class="text-muted">
-            By <a href="{% url 'profile' comment.user.id %}">
-            <b>@{{ comment.user.username }}</b></a> {{ comment.created_at }}
-            &nbsp;<a href="{% url 'delete_comment' comment.id %}"><i class="fa-duotone fa-solid fa-trash"></i></a>
-        </small>
+        <div style="margin-left: 10px;max-width:260px;">
+            {{ comment.content }}<br>
+            <small class="text-muted">
+                By <a href="{% url 'profile' comment.user.id %}">
+                <b>@{{ comment.user.username }}</b></a> {{ comment.created_at }}<br>
+                {{ comment.count_likes }}
+                {% if comment.count_likes == 1 %}
+                like
+                {% else %}
+                likes
+                {% endif %}
+                {% if user in comment.likes.all %}
+                &nbsp;<a href="{% url 'comment_like' comment.id %}"><i class="fa-solid fa-heart"
+                                                                       style="color: #ff0000;"></i></a>
+                {% else %}
+                &nbsp;<a href="{% url 'comment_like' comment.id %}"><i class="fa-regular fa-heart"
+                                                                       style="color: #ff0000;"></i></a>
+                {% endif %}
+                &nbsp;<a href="{% url 'delete_comment' comment.id %}"><i class="fa-duotone fa-solid fa-trash"></i></a>
+            </small>
         </div>
     </div>
     {% endif %}

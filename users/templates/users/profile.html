@@ -149,11 +149,23 @@
                 </div>
                 <div style="margin: 10px;">
                     {{ profile.follows.count }}<br>
+                    {% if profile.follows.count == 0 %}
+<!--                    <span class="text-muted">{{ profile.follows.count }}</span><br>-->
+                    Follows
+                    {% else %}
+<!--                    {{ profile.follows.count }}<br>-->
                     <a href="{% url 'follows' profile.user.id %}">Follows</a>
+                    {% endif %}
                 </div>
                 <div style="margin: 10px;">
                     {{ profile.followed_by.count }}<br>
+                    {% if profile.followed_by.count == 0 %}
+<!--                    <span class="text-muted">{{ profile.followed_by.count }}</span><br>-->
+                    Followers
+                    {% else %}
+<!--                    {{ profile.followed_by.count }}<br>-->
                     <a href="{% url 'followers' profile.user.id %}">Followers</a>
+                    {% endif %}
 
                 </div>
             </div>
