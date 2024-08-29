@@ -8,10 +8,9 @@ class PostForm(forms.ModelForm):
             'placeholder': 'Enter Your Text',
             'class': 'form-control'
         }
-    ), label="",
-
-                           )
+    ), label="", )
 
     class Meta:
         model = Post
         exclude = 'user', 'likes'
+

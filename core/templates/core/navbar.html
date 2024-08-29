@@ -15,9 +15,8 @@
                     <a class="nav-link" href="{% url 'profiles' %}">Profiles</a>
                 </li>
             </ul>
-            <form action="{% url 'search' %}" method="post" class="d-flex" role="search" style="margin-right: 20px;">
-                {% csrf_token %}
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+            <form action="{% url 'search' %}" method="get" class="d-flex" role="search" style="margin-right: 20px;">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
                 <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
             </form>
 
@@ -42,6 +41,7 @@
                     {% endif %}
 
                 </li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'add_post' %}">Add a Post</a></li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>

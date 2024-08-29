@@ -33,15 +33,17 @@
         </div>
     </div>
     <br>
-            {% if form %}
-            <form method="post">
-                {% csrf_token %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-                {{ form.as_p }}
+        {{ form.body }}<br>
+        <div style="margin-bottom: 20px;">
+            {{ form.image }}
+            {{ form.video }}
+        </div>
 
 
-                <button type="submit" class="btn btn-dark">Edit a post</button>
-            </form>
-            {% endif %}
+        <button type="submit" class="btn btn-dark">Edit a post</button>
+    </form>
 </div>
 {% endblock %}

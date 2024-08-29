@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib import messages
 from .models import Profile
 from posts.models import Post
@@ -56,7 +56,7 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, "You have been logged out")
-    return redirect('home')
+    return redirect('login')
 
 
 def register_user(request):
@@ -92,7 +92,7 @@ def update_user(request):
             profile_form.save()
             login(request, current_user)
             messages.success(request, "Your profile has been successfully updated")
-            return redirect('home')
+            return redirect(reverse('profile', args=[request.user.id]))
         return render(request, "users/update_user.html",
                       {'user_form': user_form, "profile_form": profile_form})
     else:
@@ -109,7 +109,7 @@ def update_password(request):
                 form.save()
                 messages.success(request, "Your password has been successfully changed")
                 login(request, current_user)
-                return redirect('home')
+                return redirect(reverse('profile', args=[request.user.id]))
             else:
                 for error in list(form.errors.values()):
                     messages.error(request, error)

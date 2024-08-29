@@ -20,13 +20,13 @@
 <div class="container">
     <br>
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+    {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-        {% endfor %}
+    {% endfor %}
     {% endif %}
     {% block content %}{% endblock %}
 </div>
@@ -35,5 +35,38 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/6b94af490e.js" crossorigin="anonymous"></script>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const commentId = "{{ request.session.scroll_to_comment|default:'' }}"; // Получаем ID из сессии
+        if (commentId) {
+            const element = document.querySelector(`#comment-${commentId}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                // Удаляем ID из сессии после прокрутки
+                fetch(`/clear-scroll-comment-id/`); // Создайте URL для очистки ID
+            }
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const replyId = "{{ request.session.scroll_to_reply|default:'' }}"; // Получаем ID из сессии
+        if (replyId) {
+            const element = document.querySelector(`#reply-${replyId}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                // Удаляем ID из сессии после прокрутки
+                fetch(`/clear-scroll-reply-id/`); // Создайте URL для очистки ID
+            }
+        }
+    });
+</script>
 </body>
 </html>

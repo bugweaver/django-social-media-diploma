@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="alert alert-primary text-center mx-auto" style="max-width: 720px;" role="alert">
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.body }}<br>
+        <div style="margin-bottom: 20px;">
+            {{ form.image }}
+            {{ form.video }}
+        </div>
+
+
+
+
+        <button type="submit" class="btn btn-dark">Add a post</button>
+    </form>
+</div>
+{% endblock %}
