@@ -26,3 +26,6 @@ class Reply(models.Model):
 
     def count_likes(self):
         return self.likes.count()
+
+    def __str__(self):
+        return self.content
