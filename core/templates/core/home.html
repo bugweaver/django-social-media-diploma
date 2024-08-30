@@ -6,7 +6,9 @@
 {% if request.user.is_authenticated %}
 <div class="btn-group" style="margin-left: 235px;">
     <a href="{% url 'home' %}" class="btn btn-primary active" aria-current="page">All Posts</a>
+    {% if user.profile.follows.exists %}
     <a href="{% url 'posts_follows' %}" class="btn btn-primary">Follows</a>
+    {% endif %}
 </div>
 <br><br>
 {% endif %}

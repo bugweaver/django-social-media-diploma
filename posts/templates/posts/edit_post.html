@@ -37,9 +37,17 @@
         {% csrf_token %}
 
         {{ form.body }}<br>
-        <div style="margin-bottom: 20px;">
-            {{ form.image }}
-            {{ form.video }}
+        <div class='d-flex' style="margin-bottom: 20px;">
+            <div>
+                <h4>Image</h4><br>
+                {{ form.image }}
+            </div>
+
+            <div>
+                <h4>Video</h4><br>
+                {{ form.video }}
+            </div>
+
         </div>
 
 
